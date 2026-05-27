@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeRequest = null
   let lastPredictedUrl = ''
 
+  const API_BASE = window.location.origin
+
   const normalizeUrl = (value) => {
     const trimmed = value.trim()
     if (!trimmed) return ''
@@ -158,7 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
     result.classList.add('hidden')
 
     try {
-      const res = await fetch(`/api/predict?url=${encodeURIComponent(url)}`, {
+      const endpoint = `${API_BASE}/api/predict?url=${encodeURIComponent(url)}`
+      const res = await fetch(endpoint, {
         signal: controller.signal
       })
       const data = await res.json().catch(() => ({ error: 'Server returned an unreadable response' }))
