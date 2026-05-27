@@ -1,0 +1,8 @@
+Flask==2.2.5
+scikit-learn
+pandas
+numpy
+joblib
+matplotlib
+gunicorn
+python-whois

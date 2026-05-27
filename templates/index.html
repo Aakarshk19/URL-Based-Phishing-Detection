@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Phishing Detection</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">AI-Based Cybersecurity</p>
+          <h1>Phishing URL Detection</h1>
+          <p class="headline">Analyze any website link instantly and get a risk score, confidence level, and security review.</p>
+        </div>
+      </header>
+
+      <main>
+        <div class="card input-card">
+          <form id="url-form" class="input-row">
+            <input type="url" id="url-input" placeholder="https://example.com/login" autocomplete="off" required>
+            <button type="submit" id="analyze-btn">Scan URL</button>
+          </form>
+          <p class="hint">Enter a URL and press Scan. Live analysis runs when the URL is complete.</p>
+          <div id="live-status" class="status hidden"></div>
+          <div id="spinner" class="hidden">Analyzing...</div>
+        </div>
+
+        <div id="result" class="card result-card hidden">
+          <div class="result-header">
+            <div>
+              <p class="section-label">Prediction</p>
+              <h2 id="result-label">Safe</h2>
+            </div>
+            <div class="confidence-ring" id="confidence-ring">
+              <span id="confidence-value">0%</span>
+            </div>
+          </div>
+
+          <div class="result-grid">
+            <div class="metric-card">
+              <span>Risk Level</span>
+              <strong id="risk-value">Low</strong>
+            </div>
+            <div class="metric-card">
+              <span>Trust Score</span>
+              <strong id="trust-value">0</strong>
+            </div>
+            <div class="metric-card">
+              <span>URL Length</span>
+              <strong id="length-value">0</strong>
+            </div>
+          </div>
+
+          <div class="details-panel">
+            <div class="details-block">
+              <h3>Safe indicators</h3>
+              <ul id="safe-list" class="reason-list"></ul>
+            </div>
+            <div class="details-block">
+              <h3>Suspicious indicators</h3>
+              <ul id="suspicious-list" class="reason-list"></ul>
+            </div>
+          </div>
+
+          <div class="final-panel">
+            <h3>Final recommendation</h3>
+            <p id="final-analysis">No analysis yet.</p>
+          </div>
+
+          <div class="features-panel">
+            <h3>Feature breakdown</h3>
+            <div id="feature-list" class="feature-list"></div>
+          </div>
+        </div>
+
+        <div class="card hidden" id="history-card">
+          <h3>Recent scans</h3>
+          <ul id="prediction-history" class="history-list"></ul>
+        </div>
+      </main>
+
+      <footer>
+        <small>AI Phishing Detection — Demo Project</small>
+      </footer>
+    </div>
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>

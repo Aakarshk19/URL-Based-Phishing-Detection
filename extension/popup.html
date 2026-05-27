@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Phishing Guard</title>
+    <style>
+      body{margin:0;font-family:Arial, sans-serif;background:#f4f7fb;color:#0f172a;width:320px;padding:16px}
+      h1{font-size:1.1rem;margin:0 0 16px}
+      button{width:100%;padding:12px 14px;border:none;border-radius:12px;background:#2563eb;color:#fff;font-weight:700;cursor:pointer}
+      button:disabled{opacity:.6;cursor:not-allowed}
+      .status{margin-top:12px;padding:12px;border-radius:12px;background:#e2e8f0;color:#0f172a;font-size:.95rem}
+      .link{display:block;margin-top:12px;color:#2563eb;text-decoration:none;font-size:.95rem}
+    </style>
+  </head>
+  <body>
+    <h1>AI Phishing Guard</h1>
+    <div id="current-url">Loading current tab...</div>
+    <button id="open-dashboard">Open Analysis Dashboard</button>
+    <div id="status" class="status">Check suspicious pages automatically.</div>
+    <script src="popup.js"></script>
+  </body>
+</html>

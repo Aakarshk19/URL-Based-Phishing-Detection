@@ -1,0 +1,50 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+
+# Model artifacts (keep trained models in repo for demo)
+# Uncomment if you want to exclude large model files:
+# model/phishing_model.pkl
+# model/scaler.pkl
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Logs
+*.log
+
+# Testing
+.coverage
+htmlcov/
+
+# Dependencies
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Screenshots (optional, keep for README)
+# screenshots/
