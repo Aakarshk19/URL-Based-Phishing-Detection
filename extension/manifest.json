@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "AI Phishing Guard",
   "version": "1.0",
-  "description": "Detect suspicious URLs and redirect to a phishing analysis dashboard.",
+  "description": "Detect suspicious URLs and show a warning before opening risky pages.",
   "permissions": ["tabs", "storage", "webNavigation"],
   "host_permissions": ["https://url-based-phishing-detection.onrender.com/*"],
   "background": {
