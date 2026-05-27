@@ -1,7 +1,7 @@
 const statusEl = document.getElementById('status');
 const urlEl = document.getElementById('current-url');
 const button = document.getElementById('open-dashboard');
-const API_BASE = 'http://127.0.0.1:5000';
+const API_BASE = 'https://url-based-phishing-detection.onrender.com';
 
 const updateStatus = (text) => {
   statusEl.textContent = text;

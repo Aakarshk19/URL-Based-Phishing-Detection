@@ -1,11 +1,11 @@
-const API_BASE = 'http://127.0.0.1:5000';
+const API_BASE = 'https://url-based-phishing-detection.onrender.com';
 const DASHBOARD_PATH = `${API_BASE}/dashboard`;
-const MONITORED_HOSTS = ['127.0.0.1', 'localhost'];
+const DASHBOARD_HOST = 'url-based-phishing-detection.onrender.com';
 
 const isDashboardUrl = (url) => {
   try {
     const u = new URL(url);
-    return (u.hostname === '127.0.0.1' || u.hostname === 'localhost') && u.pathname.startsWith('/dashboard');
+    return u.hostname === DASHBOARD_HOST && u.pathname.startsWith('/dashboard');
   } catch (error) {
     return false;
   }
