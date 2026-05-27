@@ -45,18 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
     liveStatus.classList.remove('hidden')
   }
 
+  const setText = (element, text) => {
+    if (element) element.textContent = text
+  }
+
   const clearLiveStatus = () => {
     liveStatus.classList.add('hidden')
   }
 
   const setConfidenceRing = (value) => {
     const deg = Math.min(100, value) * 3.6
-    confidenceRing.style.background = `conic-gradient(var(--accent) 0deg ${deg}deg, #e2e8f0 ${deg}deg 360deg)`
-    confidenceValue.textContent = `${value}%`
+    if (confidenceRing) {
+      confidenceRing.style.background = `conic-gradient(var(--accent) 0deg ${deg}deg, #e2e8f0 ${deg}deg 360deg)`
+    }
+    setText(confidenceValue, `${value}%`)
   }
 
   const setRiskDisplay = (level) => {
-    riskValue.textContent = level
+    setText(riskValue, level)
     result.classList.remove('risk-low', 'risk-medium', 'risk-high')
     if (level === 'High') result.classList.add('risk-high')
     else if (level === 'Medium') result.classList.add('risk-medium')
@@ -91,13 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const renderResult = (data) => {
-    resultLabel.textContent = data.prediction
+    setText(resultLabel, data.prediction)
     setConfidenceRing(data.confidence)
     setRiskDisplay(data.risk_level)
     const features = data.features || {}
-    reputationValue.textContent = features.reputation_score || 0
-    lengthValue.textContent = features.url_length || 0
-    document.getElementById('trust-value').textContent = data.trust_score || 0
+    setText(reputationValue, features.reputation_score || 0)
+    setText(lengthValue, features.url_length || 0)
+    setText(document.getElementById('trust-value'), data.trust_score || 0)
 
     renderList(safeList, data.safe_signals, 'No strong safe signals detected.')
     renderList(suspiciousList, data.suspicious_signals, 'No suspicious indicators detected.')
@@ -108,12 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const renderError = (message) => {
-    resultLabel.textContent = 'Error'
+    setText(resultLabel, 'Error')
     setConfidenceRing(0)
     setRiskDisplay('Low')
-    reputationValue.textContent = '0'
-    lengthValue.textContent = '0'
-    document.getElementById('trust-value').textContent = '0'
+    setText(reputationValue, '0')
+    setText(lengthValue, '0')
+    setText(document.getElementById('trust-value'), '0')
     renderList(safeList, [], 'No safe signals available.')
     renderList(suspiciousList, [message], 'No suspicious indicators detected.')
     finalAnalysis.textContent = message
