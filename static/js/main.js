@@ -21,13 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeRequest = null
   let lastPredictedUrl = ''
 
-  const isUrlReady = (value) => {
+  const normalizeUrl = (value) => {
     const trimmed = value.trim()
+    if (!trimmed) return ''
+    if (/^https?:\/\//i.test(trimmed)) return trimmed
+    return `https://${trimmed}`
+  }
+
+  const isUrlReady = (value) => {
+    const trimmed = normalizeUrl(value)
     return trimmed.length > 10 && /^(https?:\/\/)?[\w.-]+\.[A-Za-z]{2,}(\/|$)/.test(trimmed)
   }
 
   const isUrlComplete = (value) => {
-    const trimmed = value.trim()
+    const trimmed = normalizeUrl(value)
     return /^(https?:\/\/)/.test(trimmed) && /\.[A-Za-z]{2,}(\/|$)/.test(trimmed)
   }
 
@@ -55,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const renderFeatures = (features) => {
-    const entries = Object.entries(features)
+    const entries = Object.entries(features || {})
     featureList.innerHTML = ''
     entries.forEach(([key, value]) => {
       const item = document.createElement('div')
@@ -85,15 +92,16 @@ document.addEventListener('DOMContentLoaded', () => {
     resultLabel.textContent = data.prediction
     setConfidenceRing(data.confidence)
     setRiskDisplay(data.risk_level)
-    reputationValue.textContent = data.features.reputation_score || 0
-    lengthValue.textContent = data.features.url_length || 0
+    const features = data.features || {}
+    reputationValue.textContent = features.reputation_score || 0
+    lengthValue.textContent = features.url_length || 0
     document.getElementById('trust-value').textContent = data.trust_score || 0
 
     renderList(safeList, data.safe_signals, 'No strong safe signals detected.')
     renderList(suspiciousList, data.suspicious_signals, 'No suspicious indicators detected.')
     finalAnalysis.textContent = data.final_analysis || 'No recommendation available.'
 
-    renderFeatures(data.features)
+    renderFeatures(features)
     result.classList.remove('hidden')
   }
 
@@ -129,17 +137,21 @@ document.addEventListener('DOMContentLoaded', () => {
     historyCard.classList.remove('hidden')
     history.forEach((item) => {
       const li = document.createElement('li')
-      li.innerHTML = `<strong>${item.url}</strong><span>${item.prediction} • ${item.confidence}% • ${item.risk_level}</span>`
+      li.innerHTML = `<strong>${item.url}</strong><span>${item.prediction} - ${item.confidence}% - ${item.risk_level}</span>`
       historyList.appendChild(li)
     })
   }
 
-  const fetchPrediction = async (url) => {
+  const fetchPrediction = async (rawUrl) => {
+    const url = normalizeUrl(rawUrl)
+    if (!url) return
+
     if (activeRequest) {
       activeRequest.abort()
     }
     const controller = new AbortController()
     activeRequest = controller
+    const timeoutId = setTimeout(() => controller.abort(), 45000)
 
     spinner.classList.remove('hidden')
     updateLiveStatus('Analyzing URL...')
@@ -149,9 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(`/api/predict?url=${encodeURIComponent(url)}`, {
         signal: controller.signal
       })
-      const data = await res.json()
-      spinner.classList.add('hidden')
-      activeRequest = null
+      const data = await res.json().catch(() => ({ error: 'Server returned an unreadable response' }))
       if (res.ok) {
         renderResult(data)
         saveHistory({ url: data.url, prediction: data.prediction, confidence: data.confidence, risk_level: data.risk_level })
@@ -162,19 +172,22 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLiveStatus('Prediction could not be completed')
       }
     } catch (err) {
-      spinner.classList.add('hidden')
-      activeRequest = null
       if (err.name === 'AbortError') {
-        updateLiveStatus('Waiting for latest input...')
+        renderError('The request timed out. The hosted server may still be waking up; please try again.')
+        updateLiveStatus('Prediction timed out')
       } else {
         renderError('Network or server error. Please try again.')
         updateLiveStatus('Live prediction paused due to error')
       }
+    } finally {
+      clearTimeout(timeoutId)
+      spinner.classList.add('hidden')
+      activeRequest = null
     }
   }
 
   const schedulePrediction = () => {
-    const url = input.value.trim()
+    const url = normalizeUrl(input.value)
     if (!isUrlReady(url)) {
       clearTimeout(debounceTimer)
       spinner.classList.add('hidden')
@@ -197,8 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault()
-    const url = input.value.trim()
+    const url = normalizeUrl(input.value)
     if (!url) return
+    input.value = url
     fetchPrediction(url)
   })
 
